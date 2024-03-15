@@ -1,0 +1,11 @@
+﻿## Interface: 100205
+## Title: |cff3399FFCDAlert|r技能冷却语音提醒
+## Notes: /cda打开设置界面
+## Author: 简繁
+## IconTexture: Interface\AddOns\CDAlert\CDAlert.jpg
+## SavedVariables: CDAlertDB
+## Version: 10.2.5
+
+CDAlertDB.lua
+CDAlert.lua
+Options.lua
