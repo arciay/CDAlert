@@ -1,6 +1,8 @@
-﻿local AddonName, _ = ...
+﻿local addon, ns = ...
+
 CDAlertDefaultDB = {
 	cdcall = true,
+	tipid = false,
 	
 	cdcalls = {	
 		[80353] = true, 	--嗜血
@@ -32,3 +34,62 @@ function loadFrame:OnEvent(event, arg1)
 end
 loadFrame:SetScript("OnEvent", loadFrame.OnEvent);
 ----------------------------------
+
+-------SomePrepare Tools(Jobs) ---------
+
+function ns.table_copy(table)
+	local NewTable = {}
+	if table then
+		for k, v in pairs(table) do
+			NewTable[k] = v 
+		end
+	end
+	return NewTable;
+end
+
+function ns.table_same(table1, table2)
+	local leng1, leng2 = ns.table_leng(table1), ns.table_leng(table2)
+	if leng1 ~= leng2 then return false end 
+
+	if table1 and table2 then
+		for k, v in pairs(table1) do
+			-- print '-----'
+			-- print (table2[k])
+			-- print (v)
+			if not (table2[k] == v) then
+				-- print '!!!!!!!!'
+				-- print ("不符合的是"..v.."...."..table2[k])
+				return false
+			end
+		end
+	end
+	return true
+end
+
+function ns.table_keys(t)
+	local tbKeys = {}
+	local i = 1
+	for k, v in pairs(t) do
+		tbKeys[i] = k
+		i = i + 1
+	end	
+	return tbKeys;
+end
+
+function ns.table_leng(t)
+  local leng=0
+  for k, v in pairs(t) do
+    leng=leng+1
+  end
+  return leng;  --return int
+end
+
+function ns.GetTrueNum(table)
+	local i = 0
+	for k, v in pairs(table) do 
+		if v then 
+			i = i + 1
+		end 
+	end 
+	return i
+end 

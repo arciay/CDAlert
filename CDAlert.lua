@@ -1,5 +1,5 @@
 ﻿local frame = CreateFrame("FRAME", "MyAddonFrame")
-frame:RegisterEvent("UNIT_SPELLCAST_SENT")
+frame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 local spells = {
@@ -21,9 +21,9 @@ local function CheckCooldown(spellID)
     end
 end
 
-local function eventHandler(_, event, unit, _, _, spellID)
+local function eventHandler(_, event, unit, _, spellID)
 if not CDAlertDB.cdcall then return end
-    if event == "UNIT_SPELLCAST_SENT" and unit == "player" then
+    if event == "UNIT_SPELLCAST_SUCCEEDED" and unit == "player" then
         if CDAlertDB["cdcalls"][spellID] then
 			C_Timer.After(1,function()
 				local start, duration, _ = GetSpellCooldown(spellID)
@@ -57,3 +57,13 @@ CDcalltimer = C_Timer.NewTicker(0.2, function()
 end)
 
 frame:SetScript("OnEvent", eventHandler)
+
+
+--显示法术ID
+--法术ID
+local function ShowID(self,data)
+	if CDAlertDB.tipid and data.id then
+		self:AddDoubleLine("|cffBA55D3法术ID:|r|cff00FF00"..data.id.."|r")
+	end
+end
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, ShowID)

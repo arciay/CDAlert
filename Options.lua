@@ -1,8 +1,8 @@
---界面部分抄自rsplate
+local addon, ns = ...
 ------------------
 local myGUI = {}
 
-myGUI.frame1 = CreateFrame( "Frame", "CDCALLUI", InterfaceOptionsFrame); 
+myGUI.frame1 = CreateFrame( "Frame", "CDCALLUI", InterfaceOptionsFramePanelContainer); 
 myGUI.frame1.name = "|cff3399FFCDAlert|r技能冷却提醒"
 
 local function newFont(offx, offy, createframe, anchora, anchroframe, anchorb, text, fontsize)
@@ -66,15 +66,31 @@ myGUI.frame1:SetScript("OnShow", function(frame)
 	pcrl:SetScript("OnClick", function()
 		 ReloadUI()
 	end)
+	
+	local testvoice = CreateFrame("Button", "testvoice", frame, "UIPanelButtonTemplate")
+	testvoice:SetText("测试")
+	testvoice:SetSize(165,30)
+	testvoice:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0 , 5)
+	testvoice:SetScript("OnClick", function()
+		C_VoiceChat.SpeakText(0, "这是一段测试语音,1234567", Enum.VoiceTtsDestination.LocalPlayback, 1, 100)
+	end)
+	if not frame.testvoiceText then 
+		frame.testvoiceText = frame:CreateFontString(nil, "OVERLAY");
+		frame.testvoiceText:SetFontObject("GameFontHighlight");
+		frame.testvoiceText:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 10 , -30)
+		frame.testvoiceText:SetJustifyH("LEFT")
+		frame.testvoiceText:SetText("如果你听不到测试声音\n那插件不生效是正常的\n能听到换其他技能试试|r");
+	end
 
 	local qqun = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
 	qqun:SetPoint("BOTTOMLEFT", -20, -30)
 	qqun:SetText("简繁:斗鱼323075")
 	qqun:SetJustifyH("RIGHT")
 	
-	cscdc= newCheckbox(25, -320, frame, "总开关","不想语音提示时关闭此项", frame, "cdcall")
+	cscdc= newCheckbox(33, -320, frame, "总开关","不想语音提示时关闭此项", frame, "cdcall")
+	tipsc= newCheckbox(33, -360, frame, "|cffBA55D3显示技能|r|cff00FF00ID|r","鼠标指向技能时显示ID,宏不生效(打开法术书鼠标指上去看)", frame, "tipid")
 
-	auraname = newFont(16, -15 , frame, "TOPLEFT", frame, "TOPLEFT", "|cff3399FFCDAlert|r技能冷却结束语音提醒", 30)
+	auraname = newFont(16, -15 , frame, "TOPLEFT", frame, "TOPLEFT", "|cff3399FFCDAlert|r技能冷却结束语音提醒,", 30)
 	if not frame.SecondText then 
 		frame.SecondText = frame:CreateFontString(nil, "OVERLAY");
 	end
@@ -84,7 +100,7 @@ myGUI.frame1:SetScript("OnShow", function(frame)
 	frame.SecondText:SetText("添加技能法术ID,当CD结束时,会提示→|cff3399FF技能名字|r+|cff3399FF好了|r\n原理是利用自带的文本转语音做的提醒,所以语音包改不了\n几个技能同时冷却结束会依次播报");
 	
 	local cdcallSavedAura = CDAlertDB["cdcalls"]
-	frame.cdcallDisplay = table_copy(cdcallSavedAura)
+	frame.cdcallDisplay = ns.table_copy(cdcallSavedAura)
 
 	if not frame.AuraText then 
 		frame.AuraText = frame:CreateFontString(nil, "OVERLAY");
@@ -141,7 +157,7 @@ myGUI.frame1:SetScript("OnShow", function(frame)
 		frame.AuraAdd:SetNormalFontObject("GameFontNormalLarge");
 		frame.AuraAdd:SetHighlightFontObject("GameFontHighlightLarge");
 		frame.AuraAdd:SetScript("OnClick", function(self, button, down)
-			if GetTrueNum(frame.cdcallDisplay) >= 20 then return end 
+			if ns.GetTrueNum(frame.cdcallDisplay) >= 20 then return end 
 			local cdcallSpellID = tonumber(cdcallEditText)
 			if frame.cdcallDisplay[cdcallSpellID] then return end
 			if not cdcallSpellID then return end 
@@ -174,8 +190,8 @@ myGUI.frame1:SetScript("OnShow", function(frame)
 		cdcallClearAuraPanel()
 		cdcallIcon = {}
 		cdcallInfo = {}
-		local cdcallKeys = table_keys(cdcallTest)
-		local cdcalliLeng = table_leng(cdcallTest)
+		local cdcallKeys = ns.table_keys(cdcallTest)
+		local cdcalliLeng = ns.table_leng(cdcallTest)
 		local cdcallt = 1
 		local cdcallhor = 1 
 		
@@ -245,6 +261,7 @@ InterfaceOptions_AddCategory(myGUI.frame1)
 SLASH_CDAC1 = "/cda"
 SLASH_CDAC2 = "/CDAlert"
 SlashCmdList["CDAC"] = function() 
+	InterfaceOptionsFrame_OpenToCategory(myGUI.frame1)
 	InterfaceOptionsFrame_OpenToCategory(myGUI.frame1)
 end
 --[[10.0新api
